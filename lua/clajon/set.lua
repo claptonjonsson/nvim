@@ -45,3 +45,5 @@ vim.opt.smartcase = true --Override the ignorecase option if searching for capit
 
 vim.opt.updatetime = 500
 vim.opt.ttimeoutlen = 10
+
+vim.opt.mouse = ""
