@@ -1,0 +1,16 @@
+-- Lua function to perform different actions based on filetype
+local function handle_filetype()
+    -- Get the filetype of the current buffer
+    local ft = vim.bo.filetype
+    -- Check filetype and perform actions accordingly
+    if ft == "html" or ft == "css" or ft == "js" then
+        vim.cmd("Prettier")
+
+    elseif ft == "lua" then
+        vim.cmd("echo 'This is Lua'")
+        -- Add your custom actions for Lua files here
+    end
+end
+
+-- Register the function as a user command (make it callable with :HandleFiletype)
+vim.api.nvim_create_user_command('HandleFiletype', handle_filetype, {})
