@@ -3,7 +3,7 @@ local function handle_filetype()
     -- Get the filetype of the current buffer
     local ft = vim.bo.filetype
     -- Check filetype and perform actions accordingly
-    if ft == "html" or ft == "css" or ft == "js" then
+    if ft == "html" or ft == "css" or ft == "javascript" then
         vim.cmd("Prettier")
 
     elseif ft == "lua" then
