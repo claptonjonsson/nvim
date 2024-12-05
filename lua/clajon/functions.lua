@@ -4,7 +4,7 @@ local function handle_filetype()
     local ft = vim.bo.filetype
     -- Check filetype and perform actions accordingly
     if ft == "html" or ft == "css" or ft == "javascript" then
-        vim.cmd("Prettier")
+          vim.cmd("!prettier --write " .. vim.fn.expand("%"))
 
     elseif ft == "lua" then
         vim.cmd("echo 'This is Lua'")
