@@ -119,7 +119,9 @@ on_init = function(client)
 })
 
 --EMMET
-require('lspconfig').emmet_language_server.setup({})
+require('lspconfig').emmet_language_server.setup({
+    filetypes = {"css", "html", "javascript"}
+})
 
 --TAILWIND CSS
 require('lspconfig').tailwindcss.setup({})
