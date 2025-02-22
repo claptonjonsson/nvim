@@ -17,3 +17,9 @@ vim.keymap.set('n', '<leader>ppc', builtin.git_commits, {})
 vim.keymap.set('n', '<leader>pps', builtin.git_stash, {})
 vim.keymap.set('n', '<leader>ppb', builtin.git_branches, {})
 vim.keymap.set('n', '<leader>ppbc', builtin.git_bcommits, {})
+
+-- Copilot chat
+vim.keymap.set('n', '<leader>ccp', function()
+  local actions = require("CopilotChat.actions")
+  require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+end, { desc = "CopilotChat - Prompt actions" })

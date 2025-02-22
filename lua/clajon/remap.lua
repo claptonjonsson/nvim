@@ -11,4 +11,4 @@ vim.keymap.set("n", "<leader>k", vim.cmd.bp)
 
 --plugins
 vim.keymap.set("n", "<leader>cf", function() vim.cmd("HandleFiletype") end, { noremap = true, silent = true })
-
+vim.keymap.set("n", "<leader>c", ":CopilotChat", { noremap = true, silent = true })
