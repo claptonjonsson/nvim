@@ -25,7 +25,7 @@ vim.opt.showcmd = true
 vim.opt.showmode = false
 vim.opt.cmdheight = 1 --0 to hide completey
 
-vim.opt.completeopt = 'longest,preview,menuone'
+vim.opt.completeopt = "longest,preview,menuone"
 vim.opt.wildmenu = true
 vim.opt.wildmode = "longest:full,full"
 vim.opt.wildoptions = "pum"
