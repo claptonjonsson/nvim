@@ -20,4 +20,4 @@ vim.keymap.set("n", "<C-s>", function()
 end, { noremap = true, silent = true })
 
 --plugins
-vim.keymap.set("n", "<leader>c", ":CopilotChat", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<leader>c", ":CopilotChat ", { noremap = true, silent = true })
