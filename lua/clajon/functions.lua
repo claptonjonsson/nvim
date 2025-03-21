@@ -7,7 +7,9 @@ local function on_save()
 	if ft == "html" or ft == "css" or ft == "javascript" then
 		vim.cmd("silent !prettier --write " .. vim.fn.expand("%"))
 	elseif ft == "lua" then
-		vim.cmd("silent!stylua " .. vim.fn.expand("%"))
+		vim.cmd("silent !stylua " .. vim.fn.expand("%"))
+    elseif ft == "cs" then
+        vim.cmd("silent !dotnet csharpier " .. vim.fn.expand("%"))
 	end
 end
 
