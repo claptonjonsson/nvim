@@ -23,5 +23,8 @@ end, { noremap = true, silent = true })
 
 --Copilot
 vim.keymap.set({ "n", "v" }, "<leader>c", ":CopilotChat ", { noremap = true, silent = true }) -- Copilot chat
+vim.keymap.set("i", "<leader>c", "<Plug>(copilot-accept-line)", { silent = true }) -- Map Shift-Tab to accept line
+vim.keymap.set("i", "<leader>cw", "<Plug>(copilot-accept-word)", { silent = true }) -- Map Ctrl-Tab to accept word
+vim.keymap.set("i", "<leader>cl", "<Plug>(copilot-accept-line)", { silent = true }) -- Map Shift-Tab to accept line
 vim.keymap.set("i", "<S-Tab>", "<Plug>(copilot-accept-word)", { silent = true }) -- Map Ctrl-Tab to accept word
-vim.keymap.set("i", "<C-Tab>", "<Plug>(copilot-accept-line)", { silent = true }) -- Map Shift-Tab to accept line
+vim.keymap.set("i", "<A-Tab>", "<Plug>(copilot-accept-line)", { silent = true }) -- Map Shift-Tab to accept line
