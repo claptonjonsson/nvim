@@ -1,4 +1,3 @@
--- TODO: Make this into a code format file only!
 local function on_save()
 	vim.cmd("wa")
 	-- Get the filetype of the current buffer
@@ -17,4 +16,3 @@ end
 
 -- Register the function as a user command (make it callable with :OnSave)
 vim.api.nvim_create_user_command("OnSave", on_save, {})
-----hej
