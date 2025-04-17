@@ -1,4 +1,4 @@
-require("clajon.functions")
+require("clajon.functions.onsave")
 
 -- Leader keys
 vim.g.mapleader = " "
