@@ -28,6 +28,9 @@ lsp_zero.extend_lspconfig({
 -- servers you have installed in your system
 
 --C#
+
+
+--OMNISHARP
 require("lspconfig").omnisharp.setup({
 	cmd = { "dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" },
 
@@ -127,6 +130,31 @@ require("lspconfig").tailwindcss.setup({})
 
 --TypeScript Language Server
 require("lspconfig").ts_ls.setup({})
+
+--Python Language Server (Pyright)
+require('lspconfig').pyright.setup{
+  on_attach = function(client, bufnr)
+    -- Keymaps and other on_attach logic can go here
+  end,
+  filetypes = { "python" },
+  root_dir = require('lspconfig').util.root_pattern(
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    "Pipfile",
+    "pyrightconfig.json"
+  ),
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "openFilesOnly",
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+}
 
 ---
 -- Autocompletion setup
