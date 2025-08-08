@@ -1,6 +1,6 @@
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<C-p>", builtin.find_files, {})
-vim.keymap.set("n", "<leader>pb", builtin.buffers, {})
+-- vim.keymap.set("n", "<leader>pb", builtin.buffers, {})
 vim.keymap.set("n", "<leader>pg", builtin.live_grep, {})
 vim.keymap.set("n", "<leader>ph", builtin.help_tags, {})
 vim.keymap.set("n", "<leader>pt", builtin.tags, {})
@@ -23,3 +23,15 @@ vim.keymap.set("n", "<leader>pc", function()
 	local actions = require("CopilotChat.actions")
 	require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
 end, { desc = "CopilotChat - Prompt actions" })
+
+-- Telescope buffers with delete buffer action
+vim.keymap.set("n", "<leader>pb", function()
+	require("telescope.builtin").buffers({
+		attach_mappings = function(_, map)
+			local actions = require("telescope.actions")
+			map("i", "<C-d>", actions.delete_buffer)
+			map("n", "<C-d>", actions.delete_buffer)
+			return true
+		end,
+	})
+end, {})
