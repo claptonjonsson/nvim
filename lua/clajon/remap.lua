@@ -8,6 +8,8 @@ vim.g.maplocalleader = "\\"
 vim.keymap.set("n", "<leader>p", vim.cmd.Ex) -- File browser
 vim.keymap.set("n", "H", ":noh<CR>", { noremap = true, silent = true })
 
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true }) --Esc exits terminal mode
+
 vim.keymap.set("n", "<leader>g", vim.cmd.Git) -- Telescope Git
 
 --Browse buffers forward and backward
