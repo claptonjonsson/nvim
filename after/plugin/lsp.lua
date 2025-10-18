@@ -23,15 +23,11 @@ lsp_zero.extend_lspconfig({
 	lsp_attach = lsp_attach,
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
-
 -- These are just examples. Replace them with the language
 -- servers you have installed in your system
-
 --C#
-
-
 --OMNISHARP
-require("lspconfig").omnisharp.setup({
+vim.lsp.config.setup_server("omnisharp", {
 	cmd = { "dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" },
 
 	settings = {
@@ -75,20 +71,17 @@ require("lspconfig").omnisharp.setup({
 })
 
 --CSS
-require("lspconfig").cssls.setup({
+vim.lsp.config.setup_server("cssls", {
 	capabilities = capabilities,
 })
 
 --HTML
-require("lspconfig").html.setup({
+vim.lsp.config.setup_server("html", {
 	capabilities = capabilities,
 })
 
---HTMX
---require('lspconfig').htmx.setup({})
-
---LUA
-require("lspconfig").lua_ls.setup({
+--Lua
+vim.lsp.config.setup_server("lua_ls", {
 	on_init = function(client)
 		local path = client.workspace_folders[1].name
 		if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
@@ -121,40 +114,40 @@ require("lspconfig").lua_ls.setup({
 })
 
 --EMMET
-require("lspconfig").emmet_language_server.setup({
+vim.lsp.config.setup_server("emmet_language_server", {
 	filetypes = { "css", "html", "javascript" },
 })
 
 --TAILWIND CSS
-require("lspconfig").tailwindcss.setup({})
+vim.lsp.config.setup_server("tailwindcss", {})
 
 --TypeScript Language Server
-require("lspconfig").ts_ls.setup({})
+vim.lsp.config.setup_server("ts_ls", {})
 
 --Python Language Server (Pyright)
-require('lspconfig').pyright.setup{
-  on_attach = function(client, bufnr)
-    -- Keymaps and other on_attach logic can go here
-  end,
-  filetypes = { "python" },
-  root_dir = require('lspconfig').util.root_pattern(
-    "pyproject.toml",
-    "setup.py",
-    "setup.cfg",
-    "requirements.txt",
-    "Pipfile",
-    "pyrightconfig.json"
-  ),
-  settings = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        diagnosticMode = "openFilesOnly",
-        useLibraryCodeForTypes = true,
-      },
-    },
-  },
-}
+vim.lsp.config.setup_server("pyright", {
+	on_attach = function(client, bufnr)
+		-- Keymaps and other on_attach logic can go here
+	end,
+	filetypes = { "python" },
+	root_dir = require("lspconfig").util.root_pattern(
+		"pyproject.toml",
+		"setup.py",
+		"setup.cfg",
+		"requirements.txt",
+		"Pipfile",
+		"pyrightconfig.json"
+	),
+	settings = {
+		python = {
+			analysis = {
+				autoSearchPaths = true,
+				diagnosticMode = "openFilesOnly",
+				useLibraryCodeForTypes = true,
+			},
+		},
+	},
+})
 
 ---
 -- Autocompletion setup
