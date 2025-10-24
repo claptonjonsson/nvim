@@ -1,142 +1,142 @@
 ---
--- LSP configuration
+-- LSP configuration (native nvim-lspconfig, avoiding deprecated framework access)
 ---
-local lsp_zero = require("lsp-zero")
-local lsp_attach = function(client, bufnr)
+-- on_attach: keymaps and buffer-local setup
+local on_attach = function(client, bufnr)
 	local opts = { buffer = bufnr }
 
-	vim.keymap.set("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-	vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-	vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-	vim.keymap.set("n", "ge", "<cmd>lua vim.diagnostic.open_float()<cr>", opts) --Added myself, not standard LSP binding
-	vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-	vim.keymap.set("n", "gf", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-	vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-	vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-	vim.keymap.set("n", "gR", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-	vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-	vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+	vim.keymap.set("n", "ga", vim.lsp.buf.code_action, opts)
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+	vim.keymap.set("n", "ge", vim.diagnostic.open_float, opts)
+	vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+	vim.keymap.set("n", "gf", function()
+		vim.lsp.buf.format({ async = true })
+	end, opts)
+	vim.keymap.set("n", "go", vim.lsp.buf.type_definition, opts)
+	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+	vim.keymap.set("n", "gR", vim.lsp.buf.rename, opts)
+	vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, opts)
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 end
 
-lsp_zero.extend_lspconfig({
-	sign_text = true,
-	lsp_attach = lsp_attach,
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-})
+-- capabilities: use cmp_nvim_lsp if available
+local capabilities = (function()
+	local ok_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+	if ok_cmp and type(cmp_nvim_lsp.default_capabilities) == "function" then
+		return cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
+	end
+	return vim.lsp.protocol.make_client_capabilities()
+end)()
 
--- These are just examples. Replace them with the language
--- servers you have installed in your system
+-- Helper that prefers the modern API vim.lsp.config.setup_server
+local function setup_server(server_name, opts)
+	opts = opts or {}
+	opts.on_attach = opts.on_attach or on_attach
+	opts.capabilities = opts.capabilities or capabilities
 
---C#
+	if type(vim.lsp.config.setup_server) == "function" then
+		local ok, err = pcall(function()
+			vim.lsp.config.setup_server(server_name, opts)
+		end)
+		if not ok then
+			vim.notify(
+				"vim.lsp.config.setup_server failed for " .. server_name .. ": " .. tostring(err),
+				vim.log.levels.WARN
+			)
+		end
+	else
+		-- Extremely old lspconfig: fall back but warn about deprecation
+		local ok, lspconfig = pcall(require, "lspconfig")
+		if ok and type(lspconfig) == "table" then
+			local srv = lspconfig[server_name]
+			if srv and type(srv.setup) == "function" then
+				local ok2, err2 = pcall(function()
+					srv.setup(opts)
+				end)
+				if not ok2 then
+					vim.notify("lspconfig." .. server_name .. ".setup failed: " .. tostring(err2), vim.log.levels.WARN)
+				else
+					vim.notify(
+						"Warning: used deprecated lspconfig framework access for " .. server_name,
+						vim.log.levels.WARN
+					)
+				end
+			else
+				vim.notify("No setup available for LSP server: " .. server_name, vim.log.levels.WARN)
+			end
+		else
+			vim.notify("nvim-lspconfig not installed; cannot setup " .. server_name, vim.log.levels.WARN)
+		end
+	end
+end
 
---OMNISHARP
-require("lspconfig").omnisharp.setup({
+-- ---------- Servers ----------
+-- OMNISHARP
+setup_server("omnisharp", {
 	cmd = { "dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" },
-
 	settings = {
 		FormattingOptions = {
-			-- Enables support for reading code style, naming convention and analyzer
-			-- settings from .editorconfig.
 			EnableEditorConfigSupport = true,
-			-- Specifies whether 'using' directives should be grouped and sorted during
-			-- document formatting.
 			OrganizeImports = nil,
 		},
-		MsBuild = {
-			-- If true, MSBuild project system will only load projects for files that
-			-- were opened in the editor. This setting is useful for big C# codebases
-			-- and allows for faster initialization of code navigation features only
-			-- for projects that are relevant to code that is being edited. With this
-			-- setting enabled OmniSharp may load fewer projects and may thus display
-			-- incomplete reference lists for symbols.
-			LoadProjectsOnDemand = nil,
-		},
+		MsBuild = { LoadProjectsOnDemand = nil },
 		RoslynExtensionsOptions = {
-			-- Enables support for roslyn analyzers, code fixes and rulesets.
 			EnableAnalyzersSupport = true,
-			-- Enables support for showing unimported types and unimported extension
-			-- methods in completion lists. When committed, the appropriate using
-			-- directive will be added at the top of the current file. This option can
-			-- have a negative impact on initial completion responsiveness,
-			-- particularly for the first few completion sessions after opening a
-			-- solution.
 			EnableImportCompletion = true,
-			-- Only run analyzers against open files when 'enableRoslynAnalyzers' is
-			-- true
 			AnalyzeOpenDocumentsOnly = nil,
 		},
-		Sdk = {
-			-- Specifies whether to include preview versions of the .NET SDK when
-			-- determining which version to use for project loading.
-			IncludePrereleases = true,
-		},
+		Sdk = { IncludePrereleases = true },
 	},
 })
 
---CSS
-require("lspconfig").cssls.setup({
+-- CSS
+setup_server("cssls", {
 	capabilities = capabilities,
 })
 
---HTML
-require("lspconfig").html.setup({
+-- HTML
+setup_server("html", {
 	capabilities = capabilities,
 })
 
---HTMX
---require('lspconfig').htmx.setup({})
-
---LUA
-require("lspconfig").lua_ls.setup({
+-- LUA
+setup_server("lua_ls", {
 	on_init = function(client)
-		local path = client.workspace_folders[1].name
-		if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
+		local path = client.workspace_folders and client.workspace_folders[1] and client.workspace_folders[1].name or ""
+		if path ~= "" and (vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc")) then
 			return
 		end
 
-		client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-			runtime = {
-				-- Tell the language server which version of Lua you're using
-				-- (most likely LuaJIT in the case of Neovim)
-				version = "LuaJIT",
-			},
-			-- Make the server aware of Neovim runtime files
+		client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua or {}, {
+			runtime = { version = "LuaJIT" },
 			workspace = {
 				checkThirdParty = false,
-				library = {
-					vim.env.VIMRUNTIME,
-					-- Depending on the usage, you might want to add additional paths here.
-					-- "${3rd}/luv/library"
-					-- "${3rd}/busted/library",
-				},
-				-- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-				-- library = vim.api.nvim_get_runtime_file("", true)
+				library = { vim.env.VIMRUNTIME },
 			},
 		})
 	end,
-	settings = {
-		Lua = {},
-	},
+	settings = { Lua = {} },
 })
 
---EMMET
-require("lspconfig").emmet_language_server.setup({
+-- EMMET
+setup_server("emmet_language_server", {
 	filetypes = { "css", "html", "javascript" },
 })
 
---TAILWIND CSS
-require("lspconfig").tailwindcss.setup({})
+-- TAILWIND CSS
+setup_server("tailwindcss", {})
 
---TypeScript Language Server
-require("lspconfig").ts_ls.setup({})
+-- TypeScript Language Server
+setup_server("ts_ls", {})
 
---Python Language Server (Pyright)
-require("lspconfig").pyright.setup({
+-- Python (Pyright)
+setup_server("pyright", {
 	on_attach = function(client, bufnr)
-		-- Keymaps and other on_attach logic can go here
+		-- server-specific on_attach
 	end,
 	filetypes = { "python" },
-	root_dir = require("lspconfig").util.root_pattern(
+	root_dir = require("lspconfig.util").root_pattern(
 		"pyproject.toml",
 		"setup.py",
 		"setup.cfg",
@@ -155,20 +155,21 @@ require("lspconfig").pyright.setup({
 	},
 })
 
----
--- Autocompletion setup
----
-local cmp = require("cmp")
-
-cmp.setup({
-	sources = {
-		{ name = "nvim_lsp" },
-	},
-	snippet = {
-		expand = function(args)
-			-- You need Neovim v0.10 to use vim.snippet
-			vim.snippet.expand(args.body)
-		end,
-	},
-	mapping = cmp.mapping.preset.insert({}),
-})
+-- ---------- Completion ----------
+local cmp_ok, cmp = pcall(require, "cmp")
+if cmp_ok then
+	cmp.setup({
+		sources = { { name = "nvim_lsp" } },
+		snippet = {
+			expand = function(args)
+				-- adjust to your snippet plugin if needed
+				if type(vim.fn["vsnip#anonymous"]) == "function" then
+					vim.fn["vsnip#anonymous"](args.body)
+				elseif vim.snippet and type(vim.snippet.expand) == "function" then
+					vim.snippet.expand(args.body)
+				end
+			end,
+		},
+		mapping = cmp.mapping.preset.insert({}),
+	})
+end
