@@ -23,11 +23,14 @@ lsp_zero.extend_lspconfig({
 	lsp_attach = lsp_attach,
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
+
 -- These are just examples. Replace them with the language
 -- servers you have installed in your system
+
 --C#
+
 --OMNISHARP
-vim.lsp.config.setup_server("omnisharp", {
+require("lspconfig").omnisharp.setup({
 	cmd = { "dotnet", "/usr/lib/omnisharp-roslyn/OmniSharp.dll" },
 
 	settings = {
@@ -71,17 +74,20 @@ vim.lsp.config.setup_server("omnisharp", {
 })
 
 --CSS
-vim.lsp.config.setup_server("cssls", {
+require("lspconfig").cssls.setup({
 	capabilities = capabilities,
 })
 
 --HTML
-vim.lsp.config.setup_server("html", {
+require("lspconfig").html.setup({
 	capabilities = capabilities,
 })
 
---Lua
-vim.lsp.config.setup_server("lua_ls", {
+--HTMX
+--require('lspconfig').htmx.setup({})
+
+--LUA
+require("lspconfig").lua_ls.setup({
 	on_init = function(client)
 		local path = client.workspace_folders[1].name
 		if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
@@ -114,18 +120,18 @@ vim.lsp.config.setup_server("lua_ls", {
 })
 
 --EMMET
-vim.lsp.config.setup_server("emmet_language_server", {
+require("lspconfig").emmet_language_server.setup({
 	filetypes = { "css", "html", "javascript" },
 })
 
 --TAILWIND CSS
-vim.lsp.config.setup_server("tailwindcss", {})
+require("lspconfig").tailwindcss.setup({})
 
 --TypeScript Language Server
-vim.lsp.config.setup_server("ts_ls", {})
+require("lspconfig").ts_ls.setup({})
 
 --Python Language Server (Pyright)
-vim.lsp.config.setup_server("pyright", {
+require("lspconfig").pyright.setup({
 	on_attach = function(client, bufnr)
 		-- Keymaps and other on_attach logic can go here
 	end,
