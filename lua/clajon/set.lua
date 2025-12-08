@@ -24,6 +24,7 @@ vim.opt.laststatus = 0
 vim.opt.showcmd = true
 vim.opt.showmode = false
 vim.opt.cmdheight = 1 --0 to hide completey
+vim.opt.showtabline = 0
 
 vim.opt.completeopt = "longest,preview,menuone"
 vim.opt.wildmenu = true
