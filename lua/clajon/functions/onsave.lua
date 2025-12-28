@@ -3,7 +3,7 @@ local function on_save()
 	-- Get the filetype of the current buffer
 	local ft = vim.bo.filetype
 	-- Check filetype and perform actions accordingly
-	if ft == "html" or ft == "css" or ft == "javascript" then
+	if ft == "html" or ft == "css" or ft == "javascript" or ft == "typescript" or ft == "javascriptreact" or ft == "typescriptreact" then
 		vim.cmd("silent !prettier --write " .. vim.fn.expand("%"))
 	elseif ft == "json" then
 		vim.cmd("silent %!jq .")
