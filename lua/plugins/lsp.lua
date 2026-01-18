@@ -116,9 +116,15 @@ return {
 						local fname = vim.api.nvim_buf_get_name(buf)
 						local root_dir = def.root_dir and def.root_dir(fname) or vim.fn.getcwd()
 
+						-- Support dynamic command generation via cmd_fn
+						local final_cmd = cmd
+						if def.cmd_fn and type(def.cmd_fn) == "function" then
+							final_cmd = def.cmd_fn(root_dir)
+						end
+
 						local final = {
 							name = def.name,
-							cmd = cmd,
+							cmd = final_cmd,
 							root_dir = root_dir,
 							filetypes = def.filetypes,
 							on_attach = on_attach,
@@ -229,31 +235,70 @@ return {
 					root_dir = root_pattern("tailwind.config.js", "tailwind.config.cjs", "package.json", ".git"),
 				},
 
-				-- Python (Pyright)
-				{
-					name = "pyright",
-					cmd_candidates = { { "pyright-langserver", "--stdio" } },
-					filetypes = { "python" },
-					root_dir = root_pattern(
-						"pyproject.toml",
-						"setup.py",
-						"setup.cfg",
-						"requirements.txt",
-						"Pipfile",
-						"pyrightconfig.json",
-						".git"
-					),
-					settings = {
-						python = {
-							analysis = {
-								autoSearchPaths = true,
-								diagnosticMode = "openFilesOnly",
-								useLibraryCodeForTypes = true,
-							},
+			-- Python (Pyright)
+			{
+				name = "pyright",
+				cmd_candidates = { { "pyright-langserver", "--stdio" } },
+				filetypes = { "python" },
+				root_dir = root_pattern(
+					"pyproject.toml",
+					"setup.py",
+					"setup.cfg",
+					"requirements.txt",
+					"Pipfile",
+					"pyrightconfig.json",
+					".git"
+				),
+				settings = {
+					python = {
+						analysis = {
+							autoSearchPaths = true,
+							diagnosticMode = "openFilesOnly",
+							useLibraryCodeForTypes = true,
 						},
 					},
 				},
-			}
+			},
+
+			-- Angular (dynamic probe locations per project)
+			{
+				name = "angularls",
+				cmd_candidates = { "ngserver" },
+				cmd_fn = function(root_dir)
+					-- Find the nearest node_modules directory from project root
+					local node_modules_dir = nil
+					local search_path = root_dir
+
+					while search_path and search_path ~= "/" do
+						local candidate = search_path .. "/node_modules"
+						local stat = fs.fs_stat(candidate)
+						if stat and stat.type == "directory" then
+							node_modules_dir = candidate
+							break
+						end
+						search_path = vim.fn.fnamemodify(search_path, ":h")
+					end
+
+					if node_modules_dir then
+						return {
+							"ngserver",
+							"--stdio",
+							"--tsProbeLocations", node_modules_dir,
+							"--ngProbeLocations", node_modules_dir
+						}
+					else
+						-- Fallback if no node_modules found
+						vim.notify(
+							"Angular LS: Could not find node_modules. Make sure dependencies are installed.",
+							vim.log.levels.WARN
+						)
+						return { "ngserver", "--stdio" }
+					end
+				end,
+				filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx" },
+				root_dir = root_pattern("angular.json"),
+			},
+		}
 
 			for _, def in ipairs(servers) do
 				autostart_lsp(def)
