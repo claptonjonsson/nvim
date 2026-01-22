@@ -120,6 +120,10 @@ return {
 						local final_cmd = cmd
 						if def.cmd_fn and type(def.cmd_fn) == "function" then
 							final_cmd = def.cmd_fn(root_dir)
+							-- If cmd_fn returns nil, skip starting this server
+							if not final_cmd then
+								return
+							end
 						end
 
 						local final = {
@@ -265,6 +269,13 @@ return {
 				name = "angularls",
 				cmd_candidates = { "ngserver" },
 				cmd_fn = function(root_dir)
+					-- Only start if we're actually in an Angular project
+					-- Check if angular.json exists in the root_dir
+					local angular_json = root_dir .. "/angular.json"
+					if not fs.fs_stat(angular_json) then
+						return nil  -- Signal to not start the server
+					end
+
 					-- Find the nearest node_modules directory from project root
 					local node_modules_dir = nil
 					local search_path = root_dir
@@ -292,7 +303,7 @@ return {
 							"Angular LS: Could not find node_modules. Make sure dependencies are installed.",
 							vim.log.levels.WARN
 						)
-						return { "ngserver", "--stdio" }
+						return nil  -- Don't start without node_modules
 					end
 				end,
 				filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx" },
