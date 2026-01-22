@@ -8,13 +8,10 @@ function M.setup()
 			-- Create second tab for GitHub Copilot CLI
 			vim.cmd("tabnew")
 			vim.cmd("terminal copilot")
-			-- Enter insert mode automatically in the terminal
-			vim.cmd("startinsert")
 
 			-- Create third tab for regular terminal
 			vim.cmd("tabnew")
 			vim.cmd("terminal")
-			vim.cmd("startinsert")
 
 			-- Return to first tab (main editor window)
 			vim.cmd("tabnext 1")
