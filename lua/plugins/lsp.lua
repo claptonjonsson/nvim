@@ -224,7 +224,7 @@ return {
 				{
 					name = "emmet_ls",
 					cmd_candidates = {
-						{ "emmet-ls", "--stdio" },
+						-- { "emmet-ls", "--stdio" },
 						{ "emmet-language-server", "--stdio" },
 					},
 					filetypes = { "html", "css", "javascript", "javascriptreact", "typescriptreact" },
