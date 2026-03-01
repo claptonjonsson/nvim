@@ -49,4 +49,4 @@ vim.opt.ttimeoutlen = 10
 
 vim.opt.mouse = ""
 
-vim.g.copilot_model = "gpt-4.1" -- Set the default model for Copilot Chat
+

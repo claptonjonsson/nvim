@@ -24,8 +24,16 @@ end, { noremap = true, silent = true })
 --PLUGINS
 
 --Copilot
-vim.keymap.set({ "n" }, "<leader>c", ":CopilotChat ", { noremap = true, silent = true }) -- Copilot chat
--- vim.keymap.set({ "n" }, "<leader>ce", ":Copilot enable<CR>", { noremap = true, silent = true }) -- Copilot inline suggestion enable
--- vim.keymap.set({ "n" }, "<leader>cd", ":Copilot disable<CR>", { noremap = true, silent = true }) -- Copilot inline suggestion disable
-vim.keymap.set("i", "<S-Tab>", "<Plug>(copilot-accept-word)", { silent = true }) -- Map Shift-Tab to accept word
-vim.keymap.set("i", "<A-Tab>", "<Plug>(copilot-accept-line)", { silent = true }) -- Map Alt-Tab to accept line
+vim.keymap.set({ "n", "v" }, "<leader>c<leader>", ":CopilotChat ", { noremap = true, silent = true }) -- Copilot chat
+vim.keymap.set("n", "<leader>ce", "<cmd>Copilot enable<CR>", { noremap = true, silent = true }) -- Copilot inline suggestion enable
+vim.keymap.set("n", "<leader>cd", "<cmd>Copilot disable<CR>", { noremap = true, silent = true }) -- Copilot inline suggestion disable
+vim.keymap.set("n", "<leader>cp", function() -- Copilot panel (opens and focuses it)
+	vim.cmd("Copilot panel")
+	vim.schedule(function()
+		local panel = require("copilot.panel")
+		if panel.winid and vim.api.nvim_win_is_valid(panel.winid) then
+			vim.api.nvim_set_current_win(panel.winid)
+		end
+	end)
+end, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>ct", "<cmd>Copilot suggestion toggle_auto_trigger<CR>", { noremap = true, silent = true }) -- Copilot auto trigger toggle
