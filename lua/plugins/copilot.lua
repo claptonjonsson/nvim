@@ -141,7 +141,7 @@ return {
 				function()
 					require("sidekick").nes_jump_or_apply()
 				end,
-				mode = { "n", "i" },
+				mode = { "n", "i", "v" },
 				desc = "Sidekick NES Jump/Apply (Alt+Tab)",
 			},
 		},
