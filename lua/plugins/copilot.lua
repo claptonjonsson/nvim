@@ -45,7 +45,7 @@ return {
 				keymap = {
 					accept = "<Tab>",
 					accept_word = "<S-Tab>",
-					accept_line = "<A-Tab>",
+					accept_line = "<A-S-Tab>",
 				},
 			},
 			nes = {
@@ -135,6 +135,14 @@ return {
 					require("sidekick").nes_jump_or_apply()
 				end,
 				desc = "Sidekick NES Jump/Apply",
+			},
+			{
+				"<A-Tab>",
+				function()
+					require("sidekick").nes_jump_or_apply()
+				end,
+				mode = { "n", "i" },
+				desc = "Sidekick NES Jump/Apply (Alt+Tab)",
 			},
 		},
 		opts = {},
