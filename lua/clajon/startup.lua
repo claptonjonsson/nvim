@@ -7,9 +7,13 @@ function M.setup()
 		if vim.fn.argc() == 0 then
 			-- Create second tab for GitHub Copilot CLI
 			vim.cmd("tabnew")
-			vim.cmd("terminal copilot")
+			vim.cmd("terminal opencode")
 
-			-- Create third tab for regular terminal
+			-- Create third tab for Lazygit
+			vim.cmd("tabnew")
+			vim.cmd("terminal lazygit")
+
+			--Create a fourth tab for regular terminal usage
 			vim.cmd("tabnew")
 			vim.cmd("terminal")
 
