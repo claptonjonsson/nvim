@@ -23,4 +23,4 @@ function M.setup()
 	end)
 end
 
-return
+return M
