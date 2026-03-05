@@ -9,13 +9,13 @@ function M.setup()
 			vim.cmd("tabnew")
 			vim.cmd("terminal opencode")
 
-			-- Create third tab for Lazygit
-			vim.cmd("tabnew")
-			vim.cmd("terminal lazygit")
-
-			--Create a fourth tab for regular terminal usage
+			-- Create third tab for regular terminal usage
 			vim.cmd("tabnew")
 			vim.cmd("terminal")
+
+			--Create a fourth tab for Lazygit
+			vim.cmd("tabnew")
+			vim.cmd("terminal lazygit")
 
 			-- Return to first tab (main editor window)
 			vim.cmd("tabnext 1")
