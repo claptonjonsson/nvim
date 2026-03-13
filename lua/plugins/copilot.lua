@@ -6,18 +6,6 @@ return {
 		dependencies = {
 			{
 				"copilotlsp-nvim/copilot-lsp",
-				init = function()
-					vim.g.copilot_nes_debounce = 500
-					-- copilot-lsp expects `copilot-language-server` binary; use copilot.lua's bundled JS instead
-					vim.lsp.config("copilot_ls", {
-						cmd = {
-							"node",
-							vim.fn.stdpath("data") .. "/lazy/copilot.lua/copilot/js/language-server.js",
-							"--stdio",
-						},
-					})
-					vim.lsp.enable("copilot_ls")
-				end,
 			},
 		},
 		opts = {
