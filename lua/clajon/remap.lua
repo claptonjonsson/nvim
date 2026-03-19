@@ -13,8 +13,8 @@ vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true }) --Esc exits ter
 vim.keymap.set("n", "<leader>g", vim.cmd.Git) -- Telescope Git
 
 --Browse buffers forward and backward
-vim.keymap.set("n", "<leader>j", vim.cmd.bn)
-vim.keymap.set("n", "<leader>k", vim.cmd.bp)
+vim.keymap.set("n", "<leader>k", vim.cmd.bn)
+vim.keymap.set("n", "<leader>j", vim.cmd.bp)
 
 -- Fuction to be called when saving, depending on filetype.
 vim.keymap.set("n", "<C-s>", function()
