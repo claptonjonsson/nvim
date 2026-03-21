@@ -30,12 +30,12 @@ end, { desc = "CopilotChat - Prompt actions" })
 
 -- Telescope buffers with delete buffer action
 vim.keymap.set("n", "<leader>pb", function()
-	require("telescope.builtin").buffers({
-		attach_mappings = function(_, map)
-			local actions = require("telescope.actions")
-			map("i", "<C-d>", actions.delete_buffer)
-			map("n", "<C-d>", actions.delete_buffer)
-			return true
-		end,
-	})
+		require("telescope.builtin").buffers({
+			attach_mappings = function(_, map)
+				local actions = require("telescope.actions")
+				map("i", "D", actions.delete_buffer)
+				map("n", "D", actions.delete_buffer)
+				return true
+			end,
+		})
 end, {})

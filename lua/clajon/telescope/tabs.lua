@@ -80,8 +80,8 @@ function M.open()
 				end)
 			end
 
-			map("i", "<C-d>", delete_tab)
-			map("n", "<C-d>", delete_tab)
+			map("i", "D", delete_tab)
+			map("n", "D", delete_tab)
 
 			return true
 		end,
