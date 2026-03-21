@@ -10,7 +10,7 @@ vim.keymap.set("n", "H", ":noh<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true }) --Esc exits terminal mode
 
-vim.keymap.set("n", "<leader>g", vim.cmd.Git) -- Telescope Git
+vim.keymap.set("n", "<leader>g", vim.cmd.Git) -- Git
 
 --Browse buffers forward and backward
 vim.keymap.set("n", "<leader>k", vim.cmd.bn)
