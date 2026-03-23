@@ -56,7 +56,15 @@ return {
 	{
 		"folke/sidekick.nvim",
 		lazy = false,
-		keys = {
+		keys = (function()
+			local function copilot_nes_jump_or_apply()
+				local nes = require("copilot.nes.api")
+				if not nes.nes_walk_cursor_start_edit() then
+					nes.nes_apply_pending_nes()
+				end
+			end
+
+			return {
 			{
 				"<c-.>",
 				function()
@@ -119,20 +127,17 @@ return {
 			},
 			{
 				"<leader>an",
-				function()
-					require("sidekick").nes_jump_or_apply()
-				end,
-				desc = "Sidekick NES Jump/Apply",
+				copilot_nes_jump_or_apply,
+				desc = "Copilot NES Jump/Apply",
 			},
 			{
 				"<A-Tab>",
-				function()
-					require("sidekick").nes_jump_or_apply()
-				end,
+				copilot_nes_jump_or_apply,
 				mode = { "n", "i", "v" },
-				desc = "Sidekick NES Jump/Apply (Alt+Tab)",
+				desc = "Copilot NES Jump/Apply (Alt+Tab)",
 			},
-		},
+			}
+		end)(),
 		opts = {},
 	},
 }
